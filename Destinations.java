@@ -323,32 +323,32 @@ class Destinations {
         var result = findCommonDestinations(maps);
 
         result.entrySet().stream()
-                .sorted(Map.Entry.comparingByValue())
-                .forEachOrdered(e -> System.out.printf("%s: %d%n", e.getKey(), e.getValue()));
+                .sorted(Comparator.comparing(entry -> entry.getValue().duration))
+                .forEachOrdered(e -> System.out.printf("%s: %d%n", e.getValue().name, e.getValue().duration));
     }
 
-    private Map<String, Integer> findCommonDestinations(List<Map<String, Integer>> maps) {
+    private Map<String, Destination> findCommonDestinations(List<Map<String, Destination>> maps) {
         return maps.stream().reduce(maps.get(0), this::intersect);
     }
 
-    private Map<String, Integer> intersect(Map<String, Integer> thisMap, Map<String, Integer> otherMap) {
-        var intersection = new HashMap<String, Integer>();
+    private Map<String, Destination> intersect(Map<String, Destination> thisMap, Map<String, Destination> otherMap) {
+        var intersection = new HashMap<String, Destination>();
 
         for (var thisEntry : thisMap.entrySet()) {
-            var thisKey = thisEntry.getKey();
-            var thisValue = thisEntry.getValue();
+            var thisId = thisEntry.getKey();
+            var thisDestination = thisEntry.getValue();
 
-            var otherValue = otherMap.get(thisKey);
-            if (otherValue != null) {
-                var max = Math.max(thisValue, otherValue);
-                intersection.put(thisKey, max);
+            var otherDestination = otherMap.get(thisId);
+            if (otherDestination != null) {
+                var destinationWithLongestDuration = thisDestination.duration > otherDestination.duration ? thisDestination : otherDestination;
+                intersection.put(thisId, destinationWithLongestDuration);
             }
         }
 
         return intersection;
     }
 
-    private Map<String, Integer> destinationsToDuration(String destinationCode, boolean isLocalTrainOnly) {
+    private Map<String, Destination> destinationsToDuration(String destinationCode, boolean isLocalTrainOnly) {
         var req = HttpRequest.newBuilder()
                 .GET()
                 .uri(URI.create(BAHN_GURU_URI_TEMPLATE.formatted(destinationCode, isLocalTrainOnly)))
@@ -359,11 +359,18 @@ class Destinations {
             return JsonWheel.read(response.body()).elements().stream()
                     .filter(wn -> wn.get("duration").val(Integer.class) <= maxDuration)
                     .collect(Collectors.toMap(
-                            wn -> wn.get("name").val(String.class),
-                            wn -> wn.get("duration").val(Integer.class)
+                            wn -> wn.get("id").val(String.class),
+                            wn -> new Destination(
+                                    wn.get("id").val(String.class),
+                                    wn.get("name").val(String.class),
+                                    wn.get("duration").val(Integer.class)
+                            )
                     ));
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private record Destination(String id, String name, int duration) {
     }
 }
