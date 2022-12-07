@@ -260,22 +260,29 @@ class Destinations {
     private static final String BAHN_GURU_URI_TEMPLATE = "https://api.direkt.bahn.guru/%s?localTrainsOnly=%b&v=4";
 
     private final List<String> destinationCodes;
+    private final boolean considerStartingPoints;
     private final boolean localTrainsOnly;
     private final int maxDuration;
     private final HttpClient httpClient = HttpClient.newHttpClient();
 
-    private Destinations(List<String> destinationCodes, boolean localTrainsOnly, int maxDuration) {
+    private Destinations(List<String> destinationCodes, boolean considerStartingPoints, boolean localTrainsOnly, int maxDuration) {
         this.destinationCodes = destinationCodes;
+        this.considerStartingPoints = considerStartingPoints;
         this.localTrainsOnly = localTrainsOnly;
         this.maxDuration = maxDuration;
     }
 
     private static Destinations fromArgs(String... args) {
+        boolean considerStartingPoints = false;
         boolean localTrainsOnly = false;
         int maxDuration = 60;
         var destinationCodes = new ArrayList<String>();
 
         for (int i = 0; i < args.length; i++) {
+            if (args[i].startsWith("--consider-start") || args[i].startsWith("-s")) {
+                considerStartingPoints = true;
+                continue;
+            }
             if (args[i].startsWith("--local-trains-only") || args[i].startsWith("-l")) {
                 localTrainsOnly = true;
                 continue;
@@ -288,7 +295,7 @@ class Destinations {
             destinationCodes.add(args[i]);
         }
 
-        return new Destinations(destinationCodes, localTrainsOnly, maxDuration);
+        return new Destinations(destinationCodes, considerStartingPoints, localTrainsOnly, maxDuration);
     }
 
     public static void main(String... args) {
@@ -296,6 +303,7 @@ class Destinations {
             var help = """
                     Calculate "common" destinations reachable through direct train connections.
                     Usage: `java Destinations.java [OPTIONS] location-1 location-2 ... location-n`
+                        --consider-start | -s           Consider starting points as destinations
                         --local-trains-only | -l        Exclude IC(E) connections
                         --max-duration <int> | -m <int> Maximum duration in minutes
                         --help | -h                     Get help""";
@@ -356,16 +364,23 @@ class Destinations {
         try {
             var response = httpClient.send(req, HttpResponse.BodyHandlers.ofString());
 
-            return JsonWheel.read(response.body()).elements().stream()
+            var map = new HashMap<String, Destination>();
+            if (considerStartingPoints) {
+                map.put(destinationCode, new Destination(destinationCode, null, 0));
+            }
+
+            JsonWheel.read(response.body()).elements().stream()
                     .filter(wn -> wn.get("duration").val(Integer.class) <= maxDuration)
-                    .collect(Collectors.toMap(
-                            wn -> wn.get("id").val(String.class),
-                            wn -> new Destination(
+                    .forEach(wn -> map.put(
+                            wn.get("id").val(String.class),
+                            new Destination(
                                     wn.get("id").val(String.class),
                                     wn.get("name").val(String.class),
                                     wn.get("duration").val(Integer.class)
                             )
                     ));
+
+            return map;
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
