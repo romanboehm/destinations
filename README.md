@@ -10,7 +10,7 @@ java Destinations.java --max-duration 80 --consider-start 8000260 8000105
 
 will get you 
 - all destinations directly reachable within 80 minutes 
-- from **both** Frankfurt/Main Main Station and Würzburg Main Station
+- from **both** Frankfurt/Main Main Station and Würzburg Main Station<sup>1</sup>
 - while also considering the starting stations as possible destinations
 - while also considering IC(E) connections
 - sorted after maximum travel duration
@@ -41,7 +41,7 @@ R?ckersbacher Schlucht: 80
 
 Java 17+
 
-### Location IDs
+### (1) Location IDs
 
 Currently, one still needs to first obtain the relevant location IDs from bahn.guru.
 
