@@ -6,8 +6,6 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.*;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 class Destinations {
 
@@ -325,7 +323,7 @@ class Destinations {
 
     private void calculate() {
         var maps = destinationCodes.stream()
-                .map(d -> destinationsToDuration(d, localTrainsOnly))
+                .map(this::destinationsToDuration)
                 .toList();
 
         var result = findCommonDestinations(maps);
@@ -356,7 +354,7 @@ class Destinations {
         return intersection;
     }
 
-    private Map<String, Destination> destinationsToDuration(String destinationCode, boolean isLocalTrainOnly) {
+    private Map<String, Destination> destinationsToDuration(String destinationCode) {
         var req = HttpRequest.newBuilder()
                 .GET()
                 .uri(URI.create(BAHN_GURU_URI_TEMPLATE.formatted(destinationCode, isLocalTrainOnly)))
