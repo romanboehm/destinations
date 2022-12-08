@@ -2,6 +2,8 @@
 
 _Destinations_ calculates, for a given set of locations, or starting points, the set of locations reachable from those via a direct Deutsche Bahn (DB) train connection.
 
+This is made possible by the great [direkt.bahn.guru](https://github.com/juliuste/direkt.bahn.guru) project.
+
 ## Example
 
 ```shell
