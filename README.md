@@ -7,12 +7,12 @@ This is made possible by the great [direkt.bahn.guru](https://github.com/juliust
 ## Example
 
 ```shell
-java Destinations.java --max-duration 80 --consider-start 8000260 8000105
+java Destinations.java --max-duration 120 --consider-start 8000260 8000105 8000096
 ```
 
 will get you 
-- all destinations directly reachable within 80 minutes 
-- from **both** Frankfurt/Main Main Station and Würzburg Main Station<sup>1</sup>
+- all destinations directly reachable within 120 minutes 
+- from Frankfurt/Main Main Station, Stuttgart Main Station, and Würzburg Main Station<sup>1</sup>
 - while also considering the starting stations as possible destinations
 - while also considering IC(E) connections
 - sorted after maximum travel duration
@@ -50,5 +50,3 @@ Currently, one still needs to first obtain the relevant location IDs from bahn.g
 1. Visit [https://direkt.bahn.guru](https://direkt.bahn.guru).
 2. Use the search functionality to pick a starting point.
 3. Take the location ID from the URL bar of your browser: `https://direkt.bahn.guru/?origin=<numeric-location-id-to-copy>` (after the `origin` request parameter).
-
-
