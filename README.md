@@ -18,23 +18,11 @@ will get you
 - sorted after maximum travel duration
 
 ```
-Aschaffenburg Hbf: 36
-Hanau Hbf: 47
-Fulda: 50
-Heigenbr?cken: 52
-Wiesthal: 56
-Partenstein: 61
-Laufach: 63
-Frankfurt(Main)Hbf: 65
-W?rzburg Hbf: 66
-H?sbach: 67
-Lohr Bahnhof: 67
-Kleinostheim: 70
-Langenprozelten: 73
-Dettingen(Main): 74
-Gem?nden(Main): 76
-Kahl(Main): 78
-R?ckersbacher Schlucht: 80
+Frankfurt(Main)Hbf: 77
+Frankfurt(M) Flughafen Fernbf: 84
+Frankfurt(Main)Süd: 99
+Hanau Hbf: 101
+Mainz Hbf: 107
 ```
 
 ## Usage
