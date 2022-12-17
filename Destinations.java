@@ -6,6 +6,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.*;
+import java.util.function.Consumer;
 
 class Destinations {
 
@@ -357,7 +358,7 @@ class Destinations {
     private Map<String, Destination> destinationsToDuration(String destinationCode) {
         var req = HttpRequest.newBuilder()
                 .GET()
-                .uri(URI.create(BAHN_GURU_URI_TEMPLATE.formatted(destinationCode, isLocalTrainOnly)))
+                .uri(URI.create(BAHN_GURU_URI_TEMPLATE.formatted(destinationCode, localTrainsOnly)))
                 .build();
         try {
             var response = httpClient.send(req, HttpResponse.BodyHandlers.ofString());
