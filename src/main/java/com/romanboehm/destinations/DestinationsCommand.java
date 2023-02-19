@@ -30,9 +30,9 @@ public class DestinationsCommand implements Runnable, QuarkusApplication {
             description = "Consider starting points as destinations")
     private boolean considerSelf;
 
-    @CommandLine.Option(names = {"--max-duration", "-m"}, defaultValue = "60",
+    @CommandLine.Option(names = {"--max-duration", "-m"}, defaultValue = CommandLine.Option.NULL_VALUE,
             description = "Maximum duration in minutes")
-    private int maxDuration;
+    private Integer maxDuration;
 
     @CommandLine.Parameters(paramLabel = "<location>", description = "location ID as per direkt.bahn.guru")
     private List<String> destinationCodes = new ArrayList<>();

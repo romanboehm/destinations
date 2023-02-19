@@ -1,6 +1,9 @@
 package com.romanboehm.destinations;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -9,10 +12,10 @@ class Destinations {
     private final DestinationService destinationService;
     private final boolean localTrainsOnly;
     private final boolean considerSelf;
-    private final int maxDuration;
+    private final Integer maxDuration;
     private final List<String> destinationCodes;
 
-    Destinations(DestinationService destinationService, boolean localTrainsOnly, boolean considerSelf, int maxDuration, List<String> destinationCodes) {
+    Destinations(DestinationService destinationService, boolean localTrainsOnly, boolean considerSelf, Integer maxDuration, List<String> destinationCodes) {
         this.destinationService = destinationService;
         this.localTrainsOnly = localTrainsOnly;
         this.considerSelf = considerSelf;
@@ -61,7 +64,7 @@ class Destinations {
             destinationsToConsider.add(self);
         }
         return destinationsToConsider.stream()
-                .filter(d -> d.duration() <= maxDuration)
+                .filter(d -> maxDuration == null || d.duration() <= maxDuration)
                 .collect(Collectors.toMap(Destination::id, Function.identity()));
     }
 }
