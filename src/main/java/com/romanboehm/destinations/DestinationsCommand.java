@@ -34,7 +34,7 @@ public class DestinationsCommand implements Runnable, QuarkusApplication {
             description = "Maximum duration in minutes")
     private Integer maxDuration;
 
-    @CommandLine.Parameters(paramLabel = "<location>", description = "location ID as per direkt.bahn.guru")
+    @CommandLine.Parameters(paramLabel = "<location>", description = "location ID as per direkt.bahn.guru", arity = "2..*")
     private List<String> destinationCodes = new ArrayList<>();
 
     @Override
